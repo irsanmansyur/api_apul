@@ -103,7 +103,7 @@ class User extends RestController
         }
     }
 
-    public function register_put()
+    public function register_post()
     {
         $this->load->library("form_validation");
         $this->form_validation->set_data($this->post());
