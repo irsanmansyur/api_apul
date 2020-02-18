@@ -35,6 +35,8 @@ class User extends RestController
         $this->methods['index_post']['limit'] = 100; // 100 requests per hour per user/key
         $this->methods['index_delete']['limit'] = 50; // 50 requests per hour per user/key
         $this->load->library('form_validation');
+
+        $this->load->helper("my_helper");
     }
 
     public function login_post()
