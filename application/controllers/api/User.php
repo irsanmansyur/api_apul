@@ -36,33 +36,6 @@ class User extends RestController
         $this->methods['index_delete']['limit'] = 50; // 50 requests per hour per user/key
         $this->load->library('form_validation');
     }
-    public function index_get()
-    {
-        $this->db->select("tbuser.*");
-        $this->db->from("tbuser");
-        $user = $this->db->get();
-        if ($user) {
-            if (count($user->result_array()) > 0)
-                $this->response([
-                    "status" => true,
-                    "message" => "User Di temukan",
-                    "data" => $user->result_array()
-                ], 200);
-            else
-                $this->response([
-                    "status" => false,
-                    "message" => "User Tidak ada",
-                    "data" => []
-                ], 200);
-        } else {
-            $this->response([
-                "status" => false,
-                "message" => "Kesalahan Siste",
-                "data" => []
-            ], 400);
-        }
-    }
-
 
     public function login_post()
     {
@@ -135,26 +108,6 @@ class User extends RestController
                 "message" => "Lengkapi data anda",
                 "data" => $this->form_validation->error_array()
             ], 200);
-        }
-    }
-    public function index_delete()
-    {
-        $where = $this->input->get();
-        if (count($this->delete()) > 0) {
-            foreach ($this->delete() as $row => $value) {
-                $where[$row] = $value;
-            }
-        }
-
-        $respon = $this->db->delete("web_aspirasi", $where);
-        if ($respon) {
-            $eks = hasilCUD("deleted.!");
-            $this->response($eks, 200);
-        } else {
-            $this->response([
-                'status' => false,
-                "message" => "Terjadi Kesalahan"
-            ], 502); // BAD_REQUEST (400) being the HTTP response code
         }
     }
 }
