@@ -87,13 +87,13 @@ class User extends RestController
                     $this->response([
                         "status" => false,
                         "message" => "Password Salah",
-                        "data" => $this->post("username")
+                        "data" => $this->post()
                     ], 200);
                 }
             } else $this->response([
                 "status" => false,
                 "message" => "User tidak di temukan"
-            ], 400);
+            ], 200);
         } else {
             $this->response([
                 "status" => false,
@@ -103,28 +103,42 @@ class User extends RestController
         }
     }
 
-    public function index_put()
+    public function register_put()
     {
-        $tbl = initTable("web_aspirasi", "asp");
-        $where = $this->input->get();
-        if (count($where) > 0) {
-            $this->db->where($where);
-            $update = $this->db->update($tbl['name'], $this->put());
-            if ($update) {
-                $respon = hasilCUD("Data Berhasil Di Update");
-                if ($respon->status)
-                    $this->response($respon, 201);
-                else
-                    $this->response($respon, 200);
-            } else {
-                $this->response(['status' => false], 400);
-            }
-        } else
-            $this->response(['status' => false, 'message' => "Update Ditolak, Ada kesalahan.!"], 500);
+        $this->load->library("form_validation");
+        $this->form_validation->set_data($this->post());
+        $this->form_validation->set_rules("username", "username", "required");
+        $this->form_validation->set_rules("password", "Password", "required");
+        $this->form_validation->set_rules("noHp", "No hp", "required");
+        $this->form_validation->set_rules("email", "email", "required");
+        $this->form_validation->set_rules("status", "status", "required");
+        if ($this->form_validation->run()) {
+            $username = $this->post("username");
+            $password = $this->post("password");
+            $email = $this->post("email");
+            $noHp = $this->post("noHp");
+            $status = $this->post("status");
+            $data = [
+                'status' => $status,
+                "password" => $password,
+                "email" => $email,
+                "username" => $username,
+                "noHp" => $noHp
+            ];
+            $this->db->insert("tbl_user", $data);
+            $eks = hasilCUD("berhasil ditambahkan");
+            $eks->data = $data;
+            $this->response($eks, 200);
+        } else {
+            $this->response([
+                "status" => false,
+                "message" => "Lengkapi data anda",
+                "data" => $this->form_validation->error_array()
+            ], 200);
+        }
     }
     public function index_delete()
     {
-
         $where = $this->input->get();
         if (count($this->delete()) > 0) {
             foreach ($this->delete() as $row => $value) {
