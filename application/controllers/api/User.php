@@ -100,7 +100,7 @@ class User extends RestController
                 "username" => $username,
                 "noHp" => $noHp
             ];
-            $this->db->insert("tbl_user", $data);
+            $this->db->insert("tbuser", $data);
             $eks = hasilCUD("berhasil ditambahkan");
             $eks->data = $data;
             $this->response($eks, 200);
