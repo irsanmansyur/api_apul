@@ -37,8 +37,29 @@ class User extends RestController
         $this->load->library('form_validation');
 
         $this->load->helper("my_helper");
+
+        $this->tbl = (object) initTable("tbuser");
     }
 
+    function index_get($id = null)
+    {
+        if ($id) {
+            $this->db->where($this->tbl->key, $id);
+        }
+        $user = $this->db->get($this->tbl->name)->result_array();
+        if ($user) {
+            $this->response([
+                "status" => true,
+                "message" => "user Di temukan",
+                "data" => $user
+            ], 200);
+        } else
+            $this->response([
+                "status" => false,
+                "message" => "user tidak Di temukan",
+                "data" => []
+            ], 200);
+    }
     public function login_post()
     {
         $this->load->library("form_validation");
@@ -111,5 +132,25 @@ class User extends RestController
                 "data" => $this->form_validation->error_array()
             ], 200);
         }
+    }
+    public function index_put($id = null)
+    {
+        $tbl = initTable("tbuser", "user");
+        $user = $this->db->get_where($this->tbl->name, [$this->tbl->key => $id])->row_array();
+        if ($user) {
+            $data = $this->put();
+            $update = $this->db->update($tbl['name'], $data, [$tbl['key'] => $id]);
+            if ($update) {
+                $respon = hasilCUD("Data Berhasil Di Update");
+                if ($respon->status) {
+                    $user = $this->db->get_where($this->tbl->name, [$this->tbl->key => $id])->row_array();
+                    $respon->data = $user;
+                    $this->response($respon, 201);
+                } else
+                    $this->response($respon, 200);
+            } else
+                $this->response(['status' => false, "message" => "Gagal Update", "data" => $user], 200);
+        } else
+            $this->response(['status' => false, 'message' => "User Tidak Dikenali.!"], 500);
     }
 }
