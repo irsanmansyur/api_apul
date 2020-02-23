@@ -42,7 +42,10 @@ class Transaksi extends RestController
     function index_get($id = null)
     {
         if ($id) {
-            $this->db->where("user_id", $id);
+            $this->db->where("idtransaksi", $id);
+        }
+        foreach ($this->get() as $key => $value) {
+            $this->db->where($key, $value);
         }
         $eks = $this->db->get("tbtransaksi")->result_array();
         if ($eks) {
