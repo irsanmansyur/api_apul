@@ -51,7 +51,6 @@ class Transaksi extends RestController
                 $waktmulai = explode(":", $val['waktu_mulai']);
                 $eks[$key]['waktu_selesai'] = $waktmulai[0] + $val['jam'] . ":" . $waktmulai[1];
             }
-
             $this->response([
                 "status" => true,
                 "data" =>  $eks
@@ -67,6 +66,7 @@ class Transaksi extends RestController
     {
         $tbl = $this->tbl;
         $data = $tbl->field;
+        $data["status"] = "belum";
         foreach ($data as $key => $val) {
             if ($key == "tgl_transaksi") {
                 $data[$key] = time();
