@@ -82,39 +82,10 @@ class Transaksi extends RestController
         $eks->data = $data;
         $this->response($eks, 200);
     }
-
-    public function register_post()
+    function index_delete($id)
     {
-        $this->load->library("form_validation");
-        $this->form_validation->set_data($this->post());
-        $this->form_validation->set_rules("username", "username", "required");
-        $this->form_validation->set_rules("password", "Password", "required");
-        $this->form_validation->set_rules("noHp", "No hp", "required");
-        $this->form_validation->set_rules("email", "email", "required");
-        $this->form_validation->set_rules("status", "status", "required");
-        if ($this->form_validation->run()) {
-            $username = $this->post("username");
-            $password = $this->post("password");
-            $email = $this->post("email");
-            $noHp = $this->post("noHp");
-            $status = $this->post("status");
-            $data = [
-                'status' => $status,
-                "password" => $password,
-                "email" => $email,
-                "username" => $username,
-                "noHp" => $noHp
-            ];
-            $this->db->insert("tbuser", $data);
-            $eks = hasilCUD("berhasil ditambahkan");
-            $eks->data = $data;
-            $this->response($eks, 200);
-        } else {
-            $this->response([
-                "status" => false,
-                "message" => "Lengkapi data anda",
-                "data" => $this->form_validation->error_array()
-            ], 200);
-        }
+        $this->db->delete($this->tbl->name, [$this->tbl->key => $id]);
+        $eks = hasilCUD("deleted.!");
+        $this->response($eks, 200);
     }
 }
