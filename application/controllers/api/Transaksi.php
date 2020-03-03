@@ -88,4 +88,26 @@ class Transaksi extends RestController
         $eks = hasilCUD("deleted.!");
         $this->response($eks, 200);
     }
+    function index_put($id = null)
+    {
+        if ($id) {
+            $transaksi = $this->db->get_where($this->tbl->name, [$this->tbl->key => $id])->row_array();
+            if ($transaksi) {
+                $data = $this->put();
+                $update = $this->db->update($this->tbl->name, $data, [$this->tbl->key => $id]);
+                if ($update) {
+                    $respon = hasilCUD("Transaksi Berhasil Di Update");
+                    if ($respon->status) {
+                        $user = $this->db->get_where($this->tbl->name, [$this->tbl->key => $id])->row_array();
+                        $respon->data = $user;
+                        $this->response($respon, 201);
+                    } else
+                        $this->response($respon, 200);
+                } else
+                    $this->response(['status' => false, "message" => "Gagal Update", "data" => $user], 200);
+            } else
+                $this->response(['status' => false, 'message' => "Transaksi Tidak Dikenali.!"], 500);
+        } else
+            $this->response(['status' => false, 'message' => "Transaksi Tidak Dikenali.!"], 500);
+    }
 }
